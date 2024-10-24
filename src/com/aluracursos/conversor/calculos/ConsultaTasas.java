@@ -10,9 +10,9 @@ import java.net.http.HttpResponse;
 
 public class ConsultaTasas {
 
-    public Moneda consultaTasa(String codigoMoneda){
+    public Moneda consultaTasa(){
 
-        URI direccion = URI.create("https://v6.exchangerate-api.com/v6/7a17c455d44411ec4828a563/latest/"+codigoMoneda+"/") ;
+        URI direccion = URI.create("https://v6.exchangerate-api.com/v6/7a17c455d44411ec4828a563/latest/USD/") ;
 
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
