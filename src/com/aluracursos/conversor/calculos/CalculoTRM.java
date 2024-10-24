@@ -1,10 +1,15 @@
 package com.aluracursos.conversor.calculos;
+import com.aluracursos.conversor.modelos.CambioRealizado;
 import com.aluracursos.conversor.modelos.Moneda;
 
+import java.io.IOException;
+import java.util.Date;
 import java.util.Scanner;
 
+
 public class CalculoTRM {
-    public static void calculoTrm(){
+
+    public CalculoTRM(Integer opcionSeleccionada) throws IOException {
         ConsultaTasas consulta = new ConsultaTasas();
         Moneda moneda = consulta.consultaTasa() ;
         double valorCOP = moneda.conversion_rates().COP();
@@ -16,15 +21,13 @@ public class CalculoTRM {
         System.out.println("Ingrese el valor que desea convertir: ");
         Scanner lecturaValor = new Scanner(System.in);
         var valorAConvertir = Double.valueOf(lecturaValor.nextDouble());
-        System.out.println("Indica el numero de la opcion deseada: ");
-        Scanner lectura = new Scanner(System.in);
-        var opcion = Integer.valueOf(lectura.nextInt());
+
         double valorMoneda = 0 ;
         double valorConvertido = 0 ;
         String nombreMoneda = "";
+        String comentario = "" ;
 
-
-        switch (opcion){
+        switch (opcionSeleccionada){
             case 1,2:
                 valorMoneda = valorCOP ;
                 nombreMoneda = "Pesos Colombianos" ;
@@ -50,23 +53,38 @@ public class CalculoTRM {
                 nombreMoneda = "Yenes Japoneses" ;
                 break;
             default:
-                opcion = 13;
+                System.out.println("Opción no valida");;
         }
 
-        if ((opcion % 2) != 0){
+        if ((opcionSeleccionada % 2) != 0){
             valorConvertido = valorMoneda * valorAConvertir ;
-            System.out.println("El valor de "+ valorAConvertir + " Dolares Americanos equivale a " + Math.round(valorConvertido * 100.00 ) /100.00 + " " + nombreMoneda  );
+
+            comentario = ("El valor de "+ valorAConvertir + " Dolares Americanos equivale a " + Math.round(valorConvertido * 100.00 ) /100.00 + " " + nombreMoneda  );
+            System.out.println(comentario);
         }else {
             valorConvertido = valorAConvertir / valorMoneda ;
-            System.out.println("El valor de "+ valorAConvertir + " " + nombreMoneda +" equivale a " + Math.round(valorConvertido * 100.00 ) /100.00 + " Dolares Americanos" );
+            comentario =("El valor de "+ valorAConvertir + " " + nombreMoneda +" equivale a " + Math.round(valorConvertido * 100.00 ) /100.00 + " Dolares Americanos" );
+            System.out.println(comentario);
         }
 
-
+        CambioRealizado cambio = new CambioRealizado() ;
+        cambio.setFechaCambio(String.valueOf(new Date()));
+        cambio.setValorIngresado(valorAConvertir);
+        cambio.setTasaAplicada(Math.round(valorMoneda * 100.00)/100.00);
+        cambio.setValorObtenido(Math.round(valorConvertido * 100.00)/100.00);
+        cambio.setLeyenda(comentario);
+        GuardarJson generarArchivo = new GuardarJson();
+        generarArchivo.crearArchivo(cambio);
 
 
 
 
     }
+
+
+
+
+
 
 
 }
